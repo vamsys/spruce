@@ -1,0 +1,37 @@
+version: 2
+jobs:
+  build:
+     working_directory: ~/spruce
+
+     machine: true
+
+     steps:
+
+      - checkout
+
+      - run:
+          name: run integration test
+          command: sbt test
+
+      - store_test_results:
+          path: ~/spruce
+
+      - run:
+          name: Update Jira
+          command: |
+            curl --netrc-file ~/spruce/credentials \
+            -X POST --data '{"transition":{"id":"41"}}' \
+            -H "Content-Type: application/json" \
+            https://inperta.atlassian.net/rest/api/2/issue/${}/transitions
+
+      - run:
+          name: install aws
+          command: |
+            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+            unzip awscli-bundle.zip
+            sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+
+      - run:
+          name: run aws version
+          command: |
+            /usr/local/bin/aws --version

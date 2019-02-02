@@ -1,0 +1,9 @@
+project/target
+target/.history
+target/scala-2.12
+target/streams
+.idea
+.idea/workspace.xml
+.idea/scala_compiler.xml
+.DS_Store
+
